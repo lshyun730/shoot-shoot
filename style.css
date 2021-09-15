@@ -1,20 +1,8 @@
 @import url('https://fonts.googleapis.com/css2?family=ZCOOL+KuaiLe&display=swap');
 *{border: 0;padding: 0;margin: 0;}
-body{background: url(images/bg.png) center center;background-size: cover;}
-button{border: 0;}
+html,body{width:100%;height:100%;overflow: hidden;}
 
-.sprite{display: block; flex-shrink: 0; background: url(images/sprite.png) no-repeat;}
-.btn{font-size: 32px;font-weight: bold;cursor: pointer;}
-.btn:hover{transform: scale(1.03);}
-
-.header {width:100vw;height: 100vh;display: flex;flex-direction: column;align-items: center;justify-content: center;display: none;}
-.header .header__logo{width:500px;height:250px;background: url(images/logo.png) no-repeat center center;background-size: contain;text-indent: -9999px;margin-bottom: 100px;}
-.header .header__start{background-position: -177px -5px; width: 253px;height: 73px;margin-bottom: 10px;}
-.header .header__rank{background-position: -440px -5px; width: 253px;height: 73px;}
-
-.game {position: relative;width: 100vw;height: 100vh;translate: all .3s;overflow: hidden;}
-.game__field{width: 100%;height: 100%;}
-.game__field .jet {position: absolute; background-position: -5px -5px;width: 162px; height: 176px;left: 150px;top:300px;text-indent: -9999px;transition: .1s;z-index: 99;}
-.game__field .bird{background: url(images/sprite.png) no-repeat -5px -189px;position: absolute;width: 161px;height: 135px;top: 0px;right: 0;transition: .3s;}
-.game__field .bullet{background: url('images/sprite.png') no-repeat -177px -93px;width: 127px;height: 36px;position: absolute;left:200px}
-.pop-up{display: none;}
+.game:fullscreen {width: 100% !important;height: 100% !important;}
+.game:-webkit-full-screen {width: 100% !important;height: 100% !important;}
+.game:-moz-full-screen {width: 100% !important;height: 100% !important;}
+.game:-ms-fullscreen {width: 100% !important;height: 100% !important;}

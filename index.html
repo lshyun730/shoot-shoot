@@ -5,29 +5,10 @@
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <link rel="stylesheet" href="style.css">
-    <script defer src="main.js"></script>
+    <script defer src="src/main.js"></script>
     <title>Shoot Shoot</title>
 </head>
 <body>
-    <header class="header">
-        <h1 class="header__logo">Shoot Shoot</h1>
-        <button class="header__start sprite btn">START</button>
-        <button class="header__rank sprite btn">RANK</button>
-    </header>
-    <section class="game">
-        <section class="game__util">
-            <div class="game__score"></div>
-            <div class="game__hearts"></div>
-            <button class="game__stop"><i class="fas fa-stop">stop</i></button> 
-        </section>
-        <section class="game__field">
-            <div class="jet sprite">jet</div>
-            <div class="bird"></div>
-        </section> 
-    </section>
-    <section class="pop-up">
-        <button class="pop-up__refresh"></button>
-        <span class="pop-up__message">hello</span>
-    </section>
+    <canvas id="canvas" style="cursor:none;" tabindex="0"></canvas>
 </body>
 </html>
