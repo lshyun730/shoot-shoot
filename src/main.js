@@ -1,7 +1,7 @@
 'use strict';
 const BACKGROUND_SPEED=-4;
 const SHIP_SPEED = 20;
-const MISSILE_SPEED = 30;
+const MISSILE_SPEED = 60;
 const SHIP_ENEMY_COLLISION=50;  
 const ENEMY_MISSILE_COLLISION=20;  
 
@@ -60,8 +60,8 @@ function imagesRepo(){
         if(item instanceof background) return this.background;
         if(item instanceof explosion) return this.explosion;
         if(item instanceof enemy && enemyNum == 1) return this.enemyblack;
-        if(item instanceof enemy && enemyNum == 2) return this.enemygreen;
-        if(item instanceof enemy && enemyNum == 3) return this.enemyred;
+        if(item instanceof enemy && enemyNum == 2) return this.enemyred;
+        if(item instanceof enemy && enemyNum == 3) return this.enemygreen;
         if(item instanceof enemy && enemyNum == 4) return this.enemywhite;
     }
 }
@@ -103,15 +103,28 @@ scene.prototype.countOf = function (type) {
         function (item, index) {
             if (item instanceof type) c++;
         });
-        console.log(c);
     return c;
 }
 scene.prototype.initEnemies = function () {
     const t = this;
     t.gameItems.push(new enemy(0, 0, 1));
-    setInterval(function () { t.gameItems.push(new enemy(0, 0, 1)); }, 3000);
-    // setInterval(function () { t.gameItems.push(new enemy(0, 0, 2)); }, 8000);
-    // setInterval(function () { t.gameItems.push(new enemy(0, 0, 3)); }, 10000);
+    setInterval(function () { t.gameItems.push(new enemy(0, 0, 1)); }, 2000);
+    setInterval(function () { 
+        for (var i = 0; i < 3 ; i++) {
+            setTimeout(function () {
+                t.gameItems.push(new enemy(0, 0, 2));
+            }, 1000 * i);
+        } 
+    }, 8000);
+    setInterval(function () { t.gameItems.push(new enemy(0, 0, 3)); },4000);
+    setInterval(function () {
+        const y = getRandom(0, canvas.height - 100);
+        for (var i = 0; i < 5 ; i++) {
+            setTimeout(function () {
+                t.gameItems.push(new enemy(0, y, 4));
+            }, 200 * i);
+        } 
+    }, 5000);
 }
 scene.prototype.init = function() {
     this.gameItems.push(new background(0, 0));
@@ -229,34 +242,55 @@ function missile(x, y){
 }
 missile.prototype = Object.create(gameObject.prototype);
 
+function enemyPattern(enemy) {
+    switch (enemy.enemyNum) {
+        case 1 :
+            enemy.speedX = 8;
+            break;
+        case 2 :
+            if(enemy.heart == 2) enemy.heart = 1;
+            enemy.speedX = 20;
+            enemy.speedY = 5;
+            break;
+        case 3 :          
+            enemy.speedX = 10;
+            if (enemy.enemyTicks > 50 && enemy.enemyTicks < 60  ) enemy.speedY = -20;
+            if (enemy.enemyTicks > 60 && enemy.enemyTicks < 90  ) enemy.speedY = 0;
+            if (enemy.enemyTicks > 90 && enemy.enemyTicks < 100  ) enemy.speedY = 20;
+            break;
+        case 4 :
+            enemy.speedX = 12;
+            if(enemy.enemyTicks < 80) {
+                enemy.speedY = -2;
+            }else{
+                enemy.speedY = 2;
+            }
+            break;
+        }
+}
+
 
 function enemy(x, y, enemyNum) {
     gameObject.call(this, x, y, enemyNum);
     this.x = canvas.width - 100;
-    this.y = getRandom(0, canvas.height - this.image.height);
+    this.y = y;
+    this.speedY = 0;
     this.zindex = 1000;
+    this.heart = 2;
+    this.enemyTicks = 0;
     this.enemyNum = enemyNum;
-    
-    switch (this.enemyNum) {
-        case 1 :
-            this.speedX = 6;
-            this.heart = 2;
-            break;
-        case 2 :
-            this.speedX = 6;
-            break;
-        case 3 :
-            this.speedX = 10;
-            break;
-        case 4 :
-            this.speedX = 8;
-            
-            break;
-    }
+    if(this.enemyNum != 4) this.y = getRandom(0, canvas.height - this.image.height);
+    if(this.enemyNum == 2) this.y = 100;
 
+    
     this.draw = function() {
         if (this.image.isLoaded == false) return;
+        this.enemyTicks += 1;
+        if (this.enemyTicks == 100) this.enemyTicks = 0;
+        enemyPattern(this);
+
         this.x -= this.speedX;
+        this.y += this.speedY;
         if (isTbd(this)) return;
 
         ctx.drawImage(this.image,
