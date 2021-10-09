@@ -1,6 +1,6 @@
 'use strict';
 const BACKGROUND_SPEED=-4;
-const SHIP_SPEED = 20;
+const SHIP_SPEED = 15;
 const MISSILE_SPEED = 60;
 const SHIP_ENEMY_COLLISION=50;  
 const ENEMY_MISSILE_COLLISION=20;  
@@ -188,10 +188,14 @@ function ship(x, y) {
 ship.prototype = Object.create(gameObject.prototype);
 ship.prototype.draw = function() {
     if(this.image.isLoaded == false || this.isDead) return;
+
     this.y = this.y + ((this.yTarget - this.y));
     ctx.drawImage(this.image, this.x , this.y, this.image.width, this.image.height);
 
     const t = this;
+
+    if(keyState['ArrowUp'] == 'on' && this.y > 0) myscene.ship.yTarget -= SHIP_SPEED;
+    if(keyState['ArrowDown'] == 'on' && this.y < canvas.height - this.image.height) myscene.ship.yTarget += SHIP_SPEED;
 
     myscene.gameItems.forEach(
         function(item){
@@ -388,6 +392,7 @@ function moveship() {
 // script start 
 
 const canvas = document.getElementById("canvas");
+const keyState = {}
 canvas.width = window.innerWidth;
 canvas.height = window.innerHeight;
 canvas.addEventListener('click', function (e) {
@@ -404,17 +409,29 @@ canvas.addEventListener('click', function (e) {
 });
 
 canvas.addEventListener('keydown', (e) => {
-    if(e.key == 'ArrowUp'){
-        myscene.ship.yTarget -= SHIP_SPEED;
-    }else if(e.key == 'ArrowDown') {
-        myscene.ship.yTarget += SHIP_SPEED;
+    keyState[e.key] = 'on';
+
+    // if(keyState['ArrowUp'] == 'on'){
+    //     myscene.ship.yTarget -= SHIP_SPEED;
+    // }else if(keyState['ArrowDown'] == 'on'){
+    //     myscene.ship.yTarget += SHIP_SPEED;
+    // }
+    // if(e.key == 'ArrowUp'){
+    //     myscene.ship.yTarget -= SHIP_SPEED;
+    // }else if(e.key == 'ArrowDown') {
+    //     myscene.ship.yTarget += SHIP_SPEED;
+    // }
+
+    if(e.key == 'ArrowRight' || e.keyCode == 32) {
+        myscene.ship.shootToEnemy();
     }
 })
 
 canvas.addEventListener('keyup', (e) => {
-    if (e.code === 'Space') {
-        myscene.ship.shootToEnemy();
-    }
+    // if (e.code === 'Space') {
+    //     myscene.ship.shootToEnemy();
+    // }
+    keyState[e.key] = undefined;
 })
 
 const ctx = canvas.getContext("2d");
