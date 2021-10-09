@@ -108,7 +108,11 @@ scene.prototype.countOf = function (type) {
 scene.prototype.initEnemies = function () {
     const t = this;
     t.gameItems.push(new enemy(0, 0, 1));
+
+    // black enemy
     setInterval(function () { t.gameItems.push(new enemy(0, 0, 1)); }, 2000);
+    
+    // red enemy
     setInterval(function () { 
         for (var i = 0; i < 3 ; i++) {
             setTimeout(function () {
@@ -116,7 +120,11 @@ scene.prototype.initEnemies = function () {
             }, 1000 * i);
         } 
     }, 8000);
+    
+    // greem enemy
     setInterval(function () { t.gameItems.push(new enemy(0, 0, 3)); },4000);
+
+    // white enemy
     setInterval(function () {
         const y = getRandom(0, canvas.height - 100);
         for (var i = 0; i < 5 ; i++) {
@@ -145,7 +153,7 @@ scene.prototype.drawAll = function() {
                 item.draw();
         });
     }
-
+    this.setScore();
     if (this.ship.isDead) this.gameOver();
 	if (!this.started) this.clickToStart();
 
@@ -153,6 +161,14 @@ scene.prototype.drawAll = function() {
     requestAnimationFrame(function () {
         t.drawAll()
     });
+}
+scene.prototype.setScore = function () {
+    ctx.save();
+    ctx.fillStyle = "black";
+    ctx.font = '30pt Impact';
+    ctx.textAlign = "left";
+    ctx.fillText("SCORE: " + this.score, 60, 80);
+
 }
 scene.prototype.clickToStart=function(){
     ctx.save();
@@ -230,9 +246,7 @@ function missile(x, y){
                         t.tbd = true;
                         item.heart -= 1;
                         if (item.heart == 0) {
-                            item.explode();
-                        }else {
-
+                            item.explode(item.score);
                         }
                     }
                 }
@@ -246,19 +260,24 @@ function enemyPattern(enemy) {
     switch (enemy.enemyNum) {
         case 1 :
             enemy.speedX = 8;
+            enemy.score = 10;
             break;
         case 2 :
+            enemy.score = 50;
             if(enemy.heart == 2) enemy.heart = 1;
             enemy.speedX = 20;
             enemy.speedY = 5;
             break;
         case 3 :          
             enemy.speedX = 10;
-            if (enemy.enemyTicks > 50 && enemy.enemyTicks < 60  ) enemy.speedY = -20;
-            if (enemy.enemyTicks > 60 && enemy.enemyTicks < 90  ) enemy.speedY = 0;
-            if (enemy.enemyTicks > 90 && enemy.enemyTicks < 100  ) enemy.speedY = 20;
+            enemy.score = 30;
+            if (enemy.enemyTicks > 0 && enemy.enemyTicks < 50) enemy.speedY = 0;
+            if (enemy.enemyTicks > 50 && enemy.enemyTicks < 60) enemy.speedY = -20;
+            if (enemy.enemyTicks > 60 && enemy.enemyTicks < 90) enemy.speedY = 0;
+            if (enemy.enemyTicks > 90 && enemy.enemyTicks < 100) enemy.speedY = 20;
             break;
         case 4 :
+            enemy.score = 20;
             enemy.speedX = 12;
             if(enemy.enemyTicks < 80) {
                 enemy.speedY = -2;
@@ -301,7 +320,8 @@ function enemy(x, y, enemyNum) {
             if (myscene.gameTicks % 5 == 0) this.nextImageFrame();
     }
 
-    this.explode = function(){
+    this.explode = function(score){
+        myscene.score += score;
         this.tbd=true;
         myscene.gameItems.push(new explosion(this.x, this.y))
     }
