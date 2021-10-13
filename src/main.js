@@ -138,6 +138,7 @@ scene.prototype.init = function() {
     this.gameItems.push(new background(0, 0));
     this.ship = (new ship(150, 300))
     this.gameItems.push(this.ship);
+    
     const t = this;
     t.drawAll();
 }
@@ -146,17 +147,20 @@ scene.prototype.drawAll = function() {
     if (this.gameTicks == 1000) this.gameTicks = 0;
 
     purgeTbd(this.gameItems);
+    this.gameItems.sort(compareZindex);
 
     if (!this.paused){
         this.gameItems.forEach(
-            function (item) {
+            function(item, index) {
                 item.draw();
         });
     }
+    
     this.setScore();
     if (this.ship.isDead) this.gameOver();
 	if (!this.started) this.clickToStart();
 
+    
     const t = this;
     requestAnimationFrame(function () {
         t.drawAll()
@@ -187,16 +191,15 @@ function ship(x, y) {
 }
 ship.prototype = Object.create(gameObject.prototype);
 ship.prototype.draw = function() {
-    if(this.image.isLoaded == false || this.isDead) return;
+    if(!this.image.isLoaded == true || this.isDead) return;
 
     this.y = this.y + ((this.yTarget - this.y));
     ctx.drawImage(this.image, this.x , this.y, this.image.width, this.image.height);
-
-    const t = this;
-
+    
     if(keyState['ArrowUp'] == 'on' && this.y > 0) myscene.ship.yTarget -= SHIP_SPEED;
     if(keyState['ArrowDown'] == 'on' && this.y < canvas.height - this.image.height) myscene.ship.yTarget += SHIP_SPEED;
-
+    
+    const t = this;
     myscene.gameItems.forEach(
         function(item){
             if(item instanceof enemy) {
@@ -221,7 +224,7 @@ function background(x, y){
     this.zindex = 0;
     this.x = 0;
     this.draw = function() {
-        if(this.image.isLoaded == false) return;
+        if(!this.image.isLoaded == true) return;
         this.x += BACKGROUND_SPEED;
         ctx.drawImage(this.image, this.x, 0, this.image.width, canvas.height);
         var rightLimit = this.x + this.image.width;
@@ -238,7 +241,7 @@ background.prototype = Object.create(gameObject.prototype);
 function missile(x, y){
     gameObject.call(this, x, y);
     this.draw = function() {
-        if (this.image.isLoaded == false) return;
+        if (!this.image.isLoaded == true) return;
         this.x += MISSILE_SPEED;
         if (isTbd(this)) return;
         var t = this;
@@ -307,7 +310,7 @@ function enemy(x, y, enemyNum) {
 
     
     this.draw = function() {
-        if (this.image.isLoaded == false) return;
+        if (!this.image.isLoaded == true) return;
         this.enemyTicks += 1;
         if (this.enemyTicks == 100) this.enemyTicks = 0;
         enemyPattern(this);
@@ -336,7 +339,7 @@ function explosion(x, y){
     gameObject.call(this, x, y)
     this.zindex = 1000;
     this.draw = function(){
-        if (this.image.isLoaded == false) return;
+        if (!this.image.isLoaded == true) return;
         ctx.drawImage(this.image,
             0 + ((this.currentFrame - 1) * this.getFrameWidth()), 0,
             this.getFrameWidth(), this.getFrameHeight(),
@@ -349,6 +352,14 @@ explosion.prototype = Object.create(gameObject.prototype);
 
 
 //util
+
+//sort array by zindex property
+function compareZindex(a, b) {
+    if (a.zindex < b.zindex)
+        return -1;
+    else
+        return 1;
+}
 
 //get random null
 function getRandom(min, max) {
@@ -410,27 +421,12 @@ canvas.addEventListener('click', function (e) {
 
 canvas.addEventListener('keydown', (e) => {
     keyState[e.key] = 'on';
-
-    // if(keyState['ArrowUp'] == 'on'){
-    //     myscene.ship.yTarget -= SHIP_SPEED;
-    // }else if(keyState['ArrowDown'] == 'on'){
-    //     myscene.ship.yTarget += SHIP_SPEED;
-    // }
-    // if(e.key == 'ArrowUp'){
-    //     myscene.ship.yTarget -= SHIP_SPEED;
-    // }else if(e.key == 'ArrowDown') {
-    //     myscene.ship.yTarget += SHIP_SPEED;
-    // }
-
     if(e.key == 'ArrowRight' || e.keyCode == 32) {
         myscene.ship.shootToEnemy();
     }
 })
 
 canvas.addEventListener('keyup', (e) => {
-    // if (e.code === 'Space') {
-    //     myscene.ship.shootToEnemy();
-    // }
     keyState[e.key] = undefined;
 })
 
