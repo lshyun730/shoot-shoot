@@ -1,6 +1,7 @@
 'use strict';
 const BACKGROUND_SPEED=-4;
 const SHIP_SPEED = 15;
+const HEART = 3;
 const MISSILE_SPEED = 60;
 const SHIP_ENEMY_COLLISION=50;  
 const ENEMY_MISSILE_COLLISION=20;  
@@ -108,6 +109,7 @@ function scene() {
     this.ship = null;
     this.gameTicks = 0;
     this.score = 0;
+    this.heart = HEART;
     this.paused=false;
     this.started=false;
 }
@@ -170,6 +172,7 @@ scene.prototype.drawAll = function() {
     
     this.setScore();
 
+    if (this.heart <= 0) this.ship.isDead = true;
     if (this.ship.isDead) this.gameOver();
 	if (!this.started) this.clickToStart();
 
@@ -188,7 +191,7 @@ scene.prototype.setScore = function () {
 }
 scene.prototype.setHeart = function () {
     this.heartX = 50;
-    for(var i = 0 ; i < 3 ; i++){
+    for(var i = 0 ; i < this.heart ; i++){
         this.gameItems.push(new heart(this.heartX, 0));
         this.heartX += 60; 
     }
@@ -199,7 +202,6 @@ scene.prototype.gameStart=function(){
     this.initEnemies();
 }
 scene.prototype.clickToStart=function(){
-    // this.gameItems.push(new logo(0, 0));
     new logo(0, 0).draw();
     ctx.save();
     ctx.font = '40pt Impact';
@@ -207,6 +209,13 @@ scene.prototype.clickToStart=function(){
     ctx.fillText("Click to start", canvas.width / 2, 100 + canvas.height / 2);
     ctx.restore();
 };
+scene.prototype.gameOver=function(){
+    ctx.save();
+    ctx.font = '40pt Impact';
+    ctx.textAlign = "center";
+    ctx.fillText("GAME OVER", canvas.width / 2, canvas.height / 2);
+    ctx.restore();
+}
 
 function ship(x, y) {
     gameObject.call(this, x, y);
@@ -226,12 +235,21 @@ ship.prototype.draw = function() {
     if(keyState['ArrowUp'] == 'on' && this.y > 0) myscene.ship.yTarget -= SHIP_SPEED;
     if(keyState['ArrowDown'] == 'on' && this.y < canvas.height - this.image.height) myscene.ship.yTarget += SHIP_SPEED;
     
+
+    if(this.shield) this.globalAlpha = 0.5;
     const t = this;
     
     myscene.gameItems.forEach(
         function(item){
             if(item instanceof enemy) {
-                if (collisionArea(item, t) > SHIP_ENEMY_COLLISION && myscene.ship.shield == false) {
+                if (collisionArea(item, t) > SHIP_ENEMY_COLLISION && !myscene.ship.shield) {
+                    myscene.ship.shield = true;
+                    myscene.heart -= 1;
+                    for (var i=myscene.gameItems.length-1;i>=0;i--) {
+                        if (myscene.gameItems[i] instanceof heart) myscene.gameItems.pop(i);
+                        break;
+                    }
+                    setTimeout(function() {myscene.ship.shield = false}, 5000);
                     t.explode(100,t.x,t.y);
                 }
             }
