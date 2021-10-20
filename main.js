@@ -1,12 +1,15 @@
 'use strict';
+
+import * as sound from './src/sound.js';
+
 const BACKGROUND_SPEED=-4;
-const SHIP_SPEED = 15;
+const SHIP_SPEED = 10;
 const HEART = 3;
 const MISSILE_SPEED = 60;
 const SHIP_ENEMY_COLLISION=50;  
 const ENEMY_MISSILE_COLLISION=20;  
 
-function imagesRepo(){
+function imagesList(){
     this.enemyblack = new Image();
     this.enemyblack.src = "images/enemyblack.png";
     this.enemyblack.onload = function () { this.isLoaded = true;};
@@ -33,6 +36,7 @@ function imagesRepo(){
 
     this.ship = new Image();
     this.ship.src = "images/ship.png";
+    this.ship.id = "ship";
     this.ship.onload = function () { this.isLoaded = true;};
     this.ship.verticalImageFrames = 1;
     this.ship.horizontalImageFrames = 1;
@@ -66,6 +70,20 @@ function imagesRepo(){
     this.heart.onload = function () { this.isLoaded = true;};
     this.heart.verticalImageFrames = 1;
     this.heart.horizontalImageFrames = 1;
+    
+    this.start = new Image();
+    this.start.src = "images/start.png";
+    this.start.id = "btnStart"
+    this.start.onload = function () { this.isLoaded = true;};
+    this.start.verticalImageFrames = 1;
+    this.start.horizontalImageFrames = 1;
+    
+    this.lank = new Image();
+    this.lank.src = "images/lank.png";
+    this.lank.id = "btnLank"
+    this.lank.onload = function () { this.isLoaded = true;};
+    this.lank.verticalImageFrames = 1;
+    this.lank.horizontalImageFrames = 1;
 
     this.getImageFor = function (item, enemyNum) {
         if(item instanceof ship) return this.ship;
@@ -73,7 +91,9 @@ function imagesRepo(){
         if(item instanceof background) return this.background;
         if(item instanceof explosion) return this.explosion;
         if(item instanceof logo) return this.logo;
+        if(item instanceof start) return this.start;
         if(item instanceof heart) return this.heart;
+        if(item instanceof lank) return this.lank;
         if(item instanceof enemy && enemyNum == 1) return this.enemyblack;
         if(item instanceof enemy && enemyNum == 2) return this.enemyred;
         if(item instanceof enemy && enemyNum == 3) return this.enemygreen;
@@ -203,17 +223,19 @@ scene.prototype.gameStart=function(){
 }
 scene.prototype.clickToStart=function(){
     new logo(0, 0).draw();
-    ctx.save();
-    ctx.font = '40pt Impact';
-    ctx.textAlign = "center";
-    ctx.fillText("Click to start", canvas.width / 2, 100 + canvas.height / 2);
-    ctx.restore();
+    new start(0, 0).draw();
+    new lank(0, 0).draw();
+    this.start = (new start(0, 0));
+    this.start.draw();
 };
 scene.prototype.gameOver=function(){
+    sound.stopBg();
+    // sound.playGameOver();
     ctx.save();
     ctx.font = '40pt Impact';
     ctx.textAlign = "center";
-    ctx.fillText("GAME OVER", canvas.width / 2, canvas.height / 2);
+    ctx.fillText("GAME OVER " , canvas.width / 2, canvas.height / 2 - 40);
+    ctx.fillText("SCORE: " + this.score , canvas.width / 2, canvas.height / 2 + 40);
     ctx.restore();
 }
 
@@ -230,13 +252,19 @@ ship.prototype.draw = function() {
     if(!this.image.isLoaded == true || this.isDead) return;
 
     this.y = this.y + ((this.yTarget - this.y));
-    ctx.drawImage(this.image, this.x , this.y, this.image.width, this.image.height);
     
+    if(this.shield) {
+        if(myscene.gameTicks % 100 == 0) ctx.globalAlpha = 1;
+        if(myscene.gameTicks % 300 == 0) ctx.globalAlpha = 0.5;
+        ctx.drawImage(this.image, this.x , this.y, this.image.width, this.image.height);
+        ctx.restore();
+    }else{
+        ctx.drawImage(this.image, this.x , this.y, this.image.width, this.image.height);
+    }
+
     if(keyState['ArrowUp'] == 'on' && this.y > 0) myscene.ship.yTarget -= SHIP_SPEED;
     if(keyState['ArrowDown'] == 'on' && this.y < canvas.height - this.image.height) myscene.ship.yTarget += SHIP_SPEED;
     
-
-    if(this.shield) this.globalAlpha = 0.5;
     const t = this;
     
     myscene.gameItems.forEach(
@@ -244,13 +272,13 @@ ship.prototype.draw = function() {
             if(item instanceof enemy) {
                 if (collisionArea(item, t) > SHIP_ENEMY_COLLISION && !myscene.ship.shield) {
                     myscene.ship.shield = true;
-                    myscene.heart -= 1;
                     for (var i=myscene.gameItems.length-1;i>=0;i--) {
                         if (myscene.gameItems[i] instanceof heart) myscene.gameItems.pop(i);
+                        myscene.heart -= 1;
+                        t.explode(t.x,t.y);
                         break;
                     }
                     setTimeout(function() {myscene.ship.shield = false}, 5000);
-                    t.explode(100,t.x,t.y);
                 }
             }
         }
@@ -259,8 +287,9 @@ ship.prototype.draw = function() {
 ship.prototype.shootToEnemy = function() {
     if(this.isDead) return;
     myscene.gameItems.push(new missile(this.x + this.image.width - 30 ,this.y + (this.image.height / 2)));
+    sound.playShoot();
 }
-ship.prototype.explode=function(damage,posx,posy){
+ship.prototype.explode=function(posx,posy){
     myscene.gameItems.push(new explosion(posx, posy));
 }
 
@@ -293,13 +322,16 @@ function missile(x, y){
         var t = this;
 
         myscene.gameItems.forEach(
-            function (item, index) {
+            function (item) {
                 if (item instanceof enemy) {
                     if (collisionArea(item, t) > ENEMY_MISSILE_COLLISION) {
                         t.tbd = true;
                         item.heart -= 1;
                         if (item.heart == 0) {
                             item.explode(item.score);
+                            sound.playExplode();
+                        } else {
+                            sound.playAttack();
                         }
                     }
                 }
@@ -317,7 +349,6 @@ function enemyPattern(enemy) {
             break;
         case 2 :
             enemy.score = 50;
-            if(enemy.heart == 2) enemy.heart = 1;
             enemy.speedX = 20;
             enemy.speedY = 5;
             break;
@@ -391,7 +422,7 @@ function explosion(x, y){
             this.getFrameWidth(), this.getFrameHeight(),
             this.x - 32 , this.y - 32 , this.getFrameWidth(), this.getFrameHeight());
         
-            if (true)this.nextImageFrame(true);
+            this.nextImageFrame(true);
     }
 }
 explosion.prototype = Object.create(gameObject.prototype);
@@ -419,6 +450,31 @@ function heart(x, y) {
     }
 }
 
+function start(x, y) {
+    gameObject.call(this, x, y);
+    this.zindex = 1000;
+    this.x = canvas.width / 2 - this.image.width / 2;
+    this.y = canvas.height / 2 + 50;
+    this.max_width = this.x + this.image.width;
+    this.max_height = this.y + this.image.height;
+
+    this.draw = function(){
+        if (!this.image.isLoaded == true) return;
+        ctx.drawImage(this.image, this.x , this.y, this.image.width, this.image.height);
+    }
+}
+
+function lank(x, y) {
+    gameObject.call(this, x, y);
+    this.zindex = 10000;
+    this.x = canvas.width / 2 - this.image.width / 2;
+    this.y = canvas.height / 2 + 140 ;
+    this.zindex = 1000;
+    this.draw = function(){
+        if (!this.image.isLoaded == true) return;
+        ctx.drawImage(this.image, this.x , this.y, this.image.width, this.image.height);
+    }
+}
 
 
 //util
@@ -479,15 +535,21 @@ canvas.height = window.innerHeight;
 
 canvas.addEventListener('click', function (e) {
     if (!myscene.started) {
-        myscene.started=true;
-        myscene.ship.isDead=false;
-        myscene.score=0;
-        for (var i=myscene.gameItems.length-1;i>=0;i--) {
-            if (myscene.gameItems[i] instanceof enemy) myscene.gameItems.splice(i,1);
+        const start = myscene.start;
+        console.log(start.x , e.pageX , start.max_width);
+        if((start.x <= e.pageX && e.pageX <= start.max_width) && (start.y <= e.pageY && e.pageY <= start.max_height) ){
+            myscene.started=true;
+            myscene.ship.isDead=false;
+            myscene.score=0;
+            sound.playBg();
+            for (var i=myscene.gameItems.length-1;i>=0;i--) {
+                if (myscene.gameItems[i] instanceof enemy) myscene.gameItems.splice(i,1);
+            }
+            myscene.gameStart();
         }
-        myscene.gameStart();
     }
 });
+
 
 canvas.addEventListener('keydown', (e) => {
     keyState[e.key] = 'on';
@@ -501,7 +563,7 @@ canvas.addEventListener('keyup', (e) => {
 })
 
 const ctx = canvas.getContext("2d");
-const images = new imagesRepo();
+const images = new imagesList();
 const myscene = new scene();
 
 myscene.init();
