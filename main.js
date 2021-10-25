@@ -162,7 +162,7 @@ scene.prototype.initEnemies = function () {
 
     // white enemy
     setInterval(function () {
-        const y = getRandom(0, canvas.height - 100);
+        const y = getRandom(100, canvas.height - 100);
         for (var i = 0; i < 5 ; i++) {
             setTimeout(function () {
                 t.gameItems.push(new enemy(0, y, 4));
@@ -191,6 +191,7 @@ scene.prototype.drawAll = function() {
     }
     
     this.setScore();
+    this.setHeart();
 
     if (this.heart <= 0) this.ship.isDead = true;
     if (this.ship.isDead) this.gameOver();
@@ -210,9 +211,10 @@ scene.prototype.setScore = function () {
     ctx.fillText("SCORE: " + this.score, 60, 80);
 }
 scene.prototype.setHeart = function () {
+    ctx.save();
     this.heartX = 50;
     for(var i = 0 ; i < this.heart ; i++){
-        this.gameItems.push(new heart(this.heartX, 0));
+        new heart(this.heartX, 0).draw();
         this.heartX += 60; 
     }
 }
@@ -254,12 +256,12 @@ ship.prototype.draw = function() {
     this.y = this.y + ((this.yTarget - this.y));
     
     if(this.shield) {
-        if(myscene.gameTicks % 100 == 0) ctx.globalAlpha = 1;
-        if(myscene.gameTicks % 300 == 0) ctx.globalAlpha = 0.5;
+        ctx.globalAlpha = 0.5;
         ctx.drawImage(this.image, this.x , this.y, this.image.width, this.image.height);
         ctx.restore();
     }else{
         ctx.drawImage(this.image, this.x , this.y, this.image.width, this.image.height);
+        ctx.globalAlpha = 1;
     }
 
     if(keyState['ArrowUp'] == 'on' && this.y > 0) myscene.ship.yTarget -= SHIP_SPEED;
@@ -272,12 +274,8 @@ ship.prototype.draw = function() {
             if(item instanceof enemy) {
                 if (collisionArea(item, t) > SHIP_ENEMY_COLLISION && !myscene.ship.shield) {
                     myscene.ship.shield = true;
-                    for (var i=myscene.gameItems.length-1;i>=0;i--) {
-                        if (myscene.gameItems[i] instanceof heart) myscene.gameItems.pop(i);
-                        myscene.heart -= 1;
-                        t.explode(t.x,t.y);
-                        break;
-                    }
+                    myscene.heart -= 1
+                    t.explode(t.x,t.y);
                     setTimeout(function() {myscene.ship.shield = false}, 5000);
                 }
             }
@@ -291,6 +289,7 @@ ship.prototype.shootToEnemy = function() {
 }
 ship.prototype.explode=function(posx,posy){
     myscene.gameItems.push(new explosion(posx, posy));
+    
 }
 
 
@@ -382,9 +381,10 @@ function enemy(x, y, enemyNum) {
     this.heart = 2;
     this.enemyTicks = 0;
     this.enemyNum = enemyNum;
-    if(this.enemyNum != 4) this.y = getRandom(0, canvas.height - this.image.height);
-    if(this.enemyNum == 2) this.y = 100;
 
+    if(this.enemyNum == 1) this.y = getRandom(0, canvas.height - this.image.height);
+    if(this.enemyNum == 2) this.y = 100;
+    if(this.enemyNum == 3) this.y = getRandom(120, canvas.height - this.image.height)
     
     this.draw = function() {
         if (!this.image.isLoaded == true) return;
