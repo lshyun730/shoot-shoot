@@ -1,6 +1,6 @@
 'use strict';
 
-import * as sound from 'sound.js';
+import * as sound from './sound.js';
 
 const BACKGROUND_SPEED=-4;
 const SHIP_SPEED = 8;
