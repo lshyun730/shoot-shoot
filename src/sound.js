@@ -1,8 +1,8 @@
-const shootSound = new Audio('../sound/shoot.mp3');
-const attackSound = new Audio('../sound/attack.mp3');
-const explodeSound = new Audio('../sound/explode.mp3');
-const bgSound = new Audio('../sound/bg.mp3');
-const gameOverSound= new Audio('../sound/gameOver.mp3');
+const shootSound = new Audio('./../sound/shoot.mp3');
+const attackSound = new Audio('./../sound/attack.mp3');
+const explodeSound = new Audio('./../sound/explode.mp3');
+const bgSound = new Audio('./../sound/bg.mp3');
+const gameOverSound= new Audio('./../sound/gameOver.mp3');
 
 export function playShoot() {
     playSound(shootSound);
