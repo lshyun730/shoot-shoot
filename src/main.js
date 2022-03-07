@@ -12,75 +12,75 @@ const ENEMY_MISSILE_COLLISION=20;
 // 이미지 정의
 function imagesList(){
     this.enemyblack = new Image();
-    this.enemyblack.src = "./../images/enemyblack.png";
+    this.enemyblack.src = "./../img/enemyblack.png";
     this.enemyblack.onload = function () { this.isLoaded = true;};
     this.enemyblack.verticalImageFrames = 1;
     this.enemyblack.horizontalImageFrames = 4;
 
     this.enemygreen = new Image();
-    this.enemygreen.src = "./../images/enemygreen.png";
+    this.enemygreen.src = "./../img/enemygreen.png";
     this.enemygreen.onload = function () { this.isLoaded = true;};
     this.enemygreen.verticalImageFrames = 1;
     this.enemygreen.horizontalImageFrames = 4;
     
     this.enemyred = new Image();
-    this.enemyred.src = "./../images/enemyred.png";
+    this.enemyred.src = "./../img/enemyred.png";
     this.enemyred.onload = function () { this.isLoaded = true;};
     this.enemyred.verticalImageFrames = 1;
     this.enemyred.horizontalImageFrames = 4;
     
     this.enemywhite = new Image();
-    this.enemywhite.src = "./../images/enemywhite.png";
+    this.enemywhite.src = "./../img/enemywhite.png";
     this.enemywhite.onload = function () { this.isLoaded = true;};
     this.enemywhite.verticalImageFrames = 1;
     this.enemywhite.horizontalImageFrames = 4;
 
     this.ship = new Image();
-    this.ship.src = "./../images/ship.png";
+    this.ship.src = "./../img/ship.png";
     this.ship.id = "ship";
     this.ship.onload = function () { this.isLoaded = true;};
     this.ship.verticalImageFrames = 1;
     this.ship.horizontalImageFrames = 1;
 
     this.missile = new Image();
-    this.missile.src = "./../images/missile.png";
+    this.missile.src = "./../img/missile.png";
     this.missile.onload = function () { this.isLoaded = true;};
     this.missile.verticalImageFrames = 1;
     this.missile.horizontalImageFrames = 1;
     
     this.background = new Image();
-    this.background.src = "./../images/field.png";
+    this.background.src = "./../img/field.png";
     this.background.onload = function () { this.isLoaded = true;};
     this.background.verticalImageFrames = 1;
     this.background.horizontalImageFrames = 1;
 
     this.explosion = new Image();
-    this.explosion.src = "./../images/explode.png";
+    this.explosion.src = "./../img/explode.png";
     this.explosion.onload = function () { this.isLoaded = true;};
     this.explosion.verticalImageFrames = 1;
     this.explosion.horizontalImageFrames = 9;
 
     this.logo = new Image();
-    this.logo.src = "./../images/logo.png";
+    this.logo.src = "./../img/logo.png";
     this.logo.onload = function () { this.isLoaded = true;};
     this.logo.verticalImageFrames = 1;
     this.logo.horizontalImageFrames = 1;
 
     this.heart = new Image();
-    this.heart.src = "./../images/heart.png";
+    this.heart.src = "./../img/heart.png";
     this.heart.onload = function () { this.isLoaded = true;};
     this.heart.verticalImageFrames = 1;
     this.heart.horizontalImageFrames = 1;
     
     this.start = new Image();
-    this.start.src = "./../images/start.png";
+    this.start.src = "./../img/start.png";
     this.start.id = "btnStart"
     this.start.onload = function () { this.isLoaded = true;};
     this.start.verticalImageFrames = 1;
     this.start.horizontalImageFrames = 1;
     
     this.lank = new Image();
-    this.lank.src = "./../images/lank.png";
+    this.lank.src = "./../img/lank.png";
     this.lank.id = "btnLank"
     this.lank.onload = function () { this.isLoaded = true;};
     this.lank.verticalImageFrames = 1;
