@@ -1,85 +1,86 @@
 'use strict';
 
-import * as sound from './src/sound.js';
+import * as sound from './sound.js';
 
 const BACKGROUND_SPEED=-4;
-const SHIP_SPEED = 10;
+const SHIP_SPEED = 8;
 const HEART = 3;
 const MISSILE_SPEED = 60;
 const SHIP_ENEMY_COLLISION=50;  
 const ENEMY_MISSILE_COLLISION=20;  
 
+// 이미지 정의
 function imagesList(){
     this.enemyblack = new Image();
-    this.enemyblack.src = "images/enemyblack.png";
+    this.enemyblack.src = "../images/enemyblack.png";
     this.enemyblack.onload = function () { this.isLoaded = true;};
     this.enemyblack.verticalImageFrames = 1;
     this.enemyblack.horizontalImageFrames = 4;
 
     this.enemygreen = new Image();
-    this.enemygreen.src = "images/enemygreen.png";
+    this.enemygreen.src = "../images/enemygreen.png";
     this.enemygreen.onload = function () { this.isLoaded = true;};
     this.enemygreen.verticalImageFrames = 1;
     this.enemygreen.horizontalImageFrames = 4;
     
     this.enemyred = new Image();
-    this.enemyred.src = "images/enemyred.png";
+    this.enemyred.src = "../images/enemyred.png";
     this.enemyred.onload = function () { this.isLoaded = true;};
     this.enemyred.verticalImageFrames = 1;
     this.enemyred.horizontalImageFrames = 4;
     
     this.enemywhite = new Image();
-    this.enemywhite.src = "images/enemywhite.png";
+    this.enemywhite.src = "../images/enemywhite.png";
     this.enemywhite.onload = function () { this.isLoaded = true;};
     this.enemywhite.verticalImageFrames = 1;
     this.enemywhite.horizontalImageFrames = 4;
 
     this.ship = new Image();
-    this.ship.src = "images/ship.png";
+    this.ship.src = "../images/ship.png";
     this.ship.id = "ship";
     this.ship.onload = function () { this.isLoaded = true;};
     this.ship.verticalImageFrames = 1;
     this.ship.horizontalImageFrames = 1;
 
     this.missile = new Image();
-    this.missile.src = "images/missile.png";
+    this.missile.src = "../images/missile.png";
     this.missile.onload = function () { this.isLoaded = true;};
     this.missile.verticalImageFrames = 1;
     this.missile.horizontalImageFrames = 1;
     
     this.background = new Image();
-    this.background.src = "images/field.png";
+    this.background.src = "../images/field.png";
     this.background.onload = function () { this.isLoaded = true;};
     this.background.verticalImageFrames = 1;
     this.background.horizontalImageFrames = 1;
 
     this.explosion = new Image();
-    this.explosion.src = "images/explode.png";
+    this.explosion.src = "../images/explode.png";
     this.explosion.onload = function () { this.isLoaded = true;};
     this.explosion.verticalImageFrames = 1;
     this.explosion.horizontalImageFrames = 9;
 
     this.logo = new Image();
-    this.logo.src = "images/logo.png";
+    this.logo.src = "../images/logo.png";
     this.logo.onload = function () { this.isLoaded = true;};
     this.logo.verticalImageFrames = 1;
     this.logo.horizontalImageFrames = 1;
 
     this.heart = new Image();
-    this.heart.src = "images/heart.png";
+    this.heart.src = "../images/heart.png";
     this.heart.onload = function () { this.isLoaded = true;};
     this.heart.verticalImageFrames = 1;
     this.heart.horizontalImageFrames = 1;
     
     this.start = new Image();
-    this.start.src = "images/start.png";
+    this.start.src = "../images/start.png";
     this.start.id = "btnStart"
     this.start.onload = function () { this.isLoaded = true;};
     this.start.verticalImageFrames = 1;
     this.start.horizontalImageFrames = 1;
     
     this.lank = new Image();
-    this.lank.src = "images/lank.png";
+    this.lank.src = "../images/lank.png";
     this.lank.id = "btnLank"
     this.lank.onload = function () { this.isLoaded = true;};
     this.lank.verticalImageFrames = 1;
@@ -101,6 +102,8 @@ function imagesList(){
     }
 }
 
+
+// 요소 오브젝트 생성
 function gameObject(x, y, enemyNum) {
     this.x = x;
     this.y = y;
@@ -132,14 +135,6 @@ function scene() {
     this.heart = HEART;
     this.paused=false;
     this.started=false;
-}
-scene.prototype.countOf = function (type) {
-    var c = 0;
-    this.gameItems.forEach(
-        function (item, index) {
-            if (item instanceof type) c++;
-        });
-    return c;
 }
 scene.prototype.initEnemies = function () {
     const t = this;
@@ -292,7 +287,6 @@ ship.prototype.explode=function(posx,posy){
     
 }
 
-
 function background(x, y){
     gameObject.call(this, x, y);
     this.zindex = 0;
@@ -343,16 +337,16 @@ missile.prototype = Object.create(gameObject.prototype);
 function enemyPattern(enemy) {
     switch (enemy.enemyNum) {
         case 1 :
-            enemy.speedX = 8;
+            enemy.speedX = 4;
             enemy.score = 10;
             break;
         case 2 :
             enemy.score = 50;
-            enemy.speedX = 20;
+            enemy.speedX = 10;
             enemy.speedY = 5;
             break;
         case 3 :          
-            enemy.speedX = 10;
+            enemy.speedX = 5;
             enemy.score = 30;
             if (enemy.enemyTicks > 0 && enemy.enemyTicks < 50) enemy.speedY = 0;
             if (enemy.enemyTicks > 50 && enemy.enemyTicks < 60) enemy.speedY = -20;
@@ -361,7 +355,7 @@ function enemyPattern(enemy) {
             break;
         case 4 :
             enemy.score = 20;
-            enemy.speedX = 12;
+            enemy.speedX = 6;
             if(enemy.enemyTicks < 80) {
                 enemy.speedY = -2;
             }else{
@@ -477,9 +471,9 @@ function lank(x, y) {
 }
 
 
-//util
+// util
 
-//sort array by zindex property
+// z-index 별로 위치조정
 function compareZindex(a, b) {
     if (a.zindex < b.zindex)
         return -1;
@@ -487,13 +481,13 @@ function compareZindex(a, b) {
         return 1;
 }
 
-//get random null
+// 랜덤한 수 생성
 function getRandom(min, max) {
     return Math.floor((Math.random() * max) + min);
 }
 
 
-//return number of pixel in overlap
+// 받은 수 만큼 이동
 function collisionArea(ob1, ob2) {
 
     var overX = Math.max(0, Math.min(ob1.x + ob1.getFrameWidth(), ob2.x + ob2.getFrameWidth()) - Math.max(ob1.x, ob2.x))
@@ -502,6 +496,7 @@ function collisionArea(ob1, ob2) {
     return overX * overY;
 }
 
+// 캔버스 범위 벗어난 요소들 tbd 변경
 function isTbd(ob) {
     if (ob.x + ob.image.width < 0 || ob.x > canvas.width || ob.y + ob.image.height < 0 || ob.y > canvas.height) {
         ob.tbd = true;
@@ -510,15 +505,17 @@ function isTbd(ob) {
     else return false;
 }
 
-// delete array elements marked with tbd property
+// tbd 요소 삭제
 function purgeTbd(arr) {
     for (var i = arr.length - 1; i >= 0; i--) {
         if (arr[i].tbd) {
+            console.log(arr[i]);
             arr.splice(i, 1);
         }
     }
 }
 
+// 키보드 이동 시 캐릭터 이동
 function moveship() {
     if(keys['ArrowUp']){
         myscene.ship.yTarget -= SHIP_SPEED;
@@ -526,31 +523,36 @@ function moveship() {
         myscene.ship.yTarget += SHIP_SPEED;
     }
 }
-// script start 
 
+
+// 스크립트 시작
 const canvas = document.getElementById("canvas");
 const keyState = {}
 canvas.width = window.innerWidth;
 canvas.height = window.innerHeight;
 
+// 캔버스 클릭 이벤트
 canvas.addEventListener('click', function (e) {
     if (!myscene.started) {
         const start = myscene.start;
-        console.log(start.x , e.pageX , start.max_width);
+
+        // 시작버튼 클릭시
         if((start.x <= e.pageX && e.pageX <= start.max_width) && (start.y <= e.pageY && e.pageY <= start.max_height) ){
             myscene.started=true;
             myscene.ship.isDead=false;
             myscene.score=0;
             sound.playBg();
+
             for (var i=myscene.gameItems.length-1;i>=0;i--) {
                 if (myscene.gameItems[i] instanceof enemy) myscene.gameItems.splice(i,1);
             }
+
             myscene.gameStart();
         }
     }
 });
 
-
+// 키보드 다운 이벤트
 canvas.addEventListener('keydown', (e) => {
     keyState[e.key] = 'on';
     if(e.key == 'ArrowRight' || e.keyCode == 32) {
@@ -558,6 +560,7 @@ canvas.addEventListener('keydown', (e) => {
     }
 })
 
+// 키보드 업 이벤트
 canvas.addEventListener('keyup', (e) => {
     keyState[e.key] = undefined;
 })

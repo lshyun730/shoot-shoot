@@ -3,11 +3,18 @@
 <head>
     <meta charset="UTF-8">
     <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
-    <link rel="stylesheet" href="style.css">
     <title>Shoot Shoot</title>
+    <style>
+        *{border: 0;padding: 0;margin: 0;}
+        html,body{width:100%;height:100%;overflow: hidden;}
+        .game:fullscreen {width: 100% !important;height: 100% !important;}
+        .game:-webkit-full-screen {width: 100% !important;height: 100% !important;}
+        .game:-moz-full-screen {width: 100% !important;height: 100% !important;}
+        .game:-ms-fullscreen {width: 100% !important;height: 100% !important;}
+    </style>
 </head>
 <body style="margin:0px;padding:0px;cursor:pointer;overflow:hidden">
     <canvas id="canvas" tabindex="0"></canvas>
-    <script src="main.js" type="module"></script>
+    <script src="src/main.js" type="module"></script>
 </body>
 </html>
