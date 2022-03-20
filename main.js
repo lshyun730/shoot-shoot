@@ -509,7 +509,6 @@ function isTbd(ob) {
 function purgeTbd(arr) {
     for (var i = arr.length - 1; i >= 0; i--) {
         if (arr[i].tbd) {
-            console.log(arr[i]);
             arr.splice(i, 1);
         }
     }
