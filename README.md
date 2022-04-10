@@ -16,6 +16,13 @@ Javascript
 <br><br>
 
 ### ✔ Reference Site
+#### Images Reference
+- [background image](https://kr.freepik.com/free-vector/adventure-background_16921968.htm)
+- [ship image](https://www.freepik.com/free-vector/astronaut-riding-rocket-cartoon-vector-icon-illustration-science-technology-icon-concept-isolated-premium-vector-flat-cartoon-style_17303379.htm#page=2&query=astronaut%20space%20rocket&position=23&from_view=search)
+- [bird image](https://www.freepik.com/free-vector/kawaii-birds-collection_4320275.htm#&position=3&from_view=undefined#position=1) 
+
+<br>
+
 #### Design Reference
 - [duck hunt](https://www.silvergames.com/en/duck-hunt)
 - [shootup](https://shootup.io/) (logo design)
@@ -31,10 +38,11 @@ Javascript
 <br><br>
 
 ### ✔ Specificity
+-  Class대신 Prototype를 사용하여 상속하였다 / Class の代わりにPrototypeを使ってinheritanceした
 - 바닐라자바스크립트 만을 사용하여 코드를 작성했다 / バニラジャバスクリプトを利用してコードを作成した
 - 이미지 정보가 저장된 메소드를 작성해 필요할때 객체를 생성하도록 하였다 (아래의 예시는 게임로고를 캔버스에 나타내는 부분이다)　/ イメージ情報が入っているメソッドを作成し、必要な時にオブジェクトを作れるようにした（以下は、ゲームのロゴをキャンバスに描く部分だ）
 ``` javascript
-// 이미지 저장소
+// image repository
 function imagesList(){
     this.logo = new Image();
     this.logo.src = "images/logo.png";
@@ -72,12 +80,11 @@ scene.prototype.clickToStart=function(){
 // 이미지리스트 객체 생성
 const images = new imagesList();
 ```
-
-
 <br><br>
 
 ### ✔ Areas for Improvement
 - [x] 총알과 새들이 canvas 내에서 사라질시 gameItemList 에서도 삭제 / ミサイルと鳥が canvas 範囲になければ gameItems[] から削除
+- [x] 게임이 길게 이어질때 프레임 아웃되는 문제해결 / ゲームが長く続く時、フレームアウト問題解決
 - [ ] 페이지를 벗어나고 다시 들어올 시 게임오버 되도록 구현하기 / ページを抜け出して再び入ってきた場合、ゲームオーバーになるようにする
 - [ ] 다시시작 버튼 생성 / 再スタートボタン作成
 - [ ] 점수가 저장이 되어 랭크로 볼수 있도록 구현 / 点数が保存され、ランクで見ることができるように実現
