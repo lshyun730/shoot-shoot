@@ -168,7 +168,7 @@ scene.prototype.initEnemies = function () {
 
     // red enemy
     setInterval(function () {
-        for (var i = 0; i < 3; i++) {
+        for (let i = 0; i < 3; i++) {
             setTimeout(function () {
                 t.gameItems.push(new enemy(0, 0, 2));
             }, 1000 * i);
@@ -183,7 +183,7 @@ scene.prototype.initEnemies = function () {
     // white enemy
     setInterval(function () {
         const y = getRandom(100, canvas.height - 100);
-        for (var i = 0; i < 5; i++) {
+        for (let i = 0; i < 5; i++) {
             setTimeout(function () {
                 t.gameItems.push(new enemy(0, y, 4));
             }, 200 * i);
@@ -231,7 +231,7 @@ scene.prototype.setScore = function () {
 };
 scene.prototype.setHeart = function () {
     this.heartX = 50;
-    for (var i = 0; i < this.heart; i++) {
+    for (let i = 0; i < this.heart; i++) {
         new heart(this.heartX, 0).draw();
         this.heartX += 60;
     }
@@ -283,7 +283,8 @@ ship.prototype.draw = function () {
     }
 
     if (keyState['ArrowUp'] == 'on' && this.y > 0) myscene.ship.yTarget -= SHIP_SPEED;
-    if (keyState['ArrowDown'] == 'on' && this.y < canvas.height - this.image.height) myscene.ship.yTarget += SHIP_SPEED;
+    if (keyState['ArrowDown'] == 'on' && this.y < canvas.height - this.image.height)
+        myscene.ship.yTarget += SHIP_SPEED;
 
     const t = this;
 
@@ -302,7 +303,9 @@ ship.prototype.draw = function () {
 };
 ship.prototype.shootToEnemy = function () {
     if (this.isDead) return;
-    myscene.gameItems.push(new missile(this.x + this.image.width - 30, this.y + this.image.height / 2));
+    myscene.gameItems.push(
+        new missile(this.x + this.image.width - 30, this.y + this.image.height / 2)
+    );
     sound.playShoot();
 };
 ship.prototype.explode = function (posx, posy) {
@@ -317,7 +320,7 @@ function background(x, y) {
         if (!this.image.isLoaded == true) return;
         this.x += BACKGROUND_SPEED;
         ctx.drawImage(this.image, this.x, 0, this.image.width, canvas.height);
-        var rightLimit = this.x + this.image.width;
+        let rightLimit = this.x + this.image.width;
 
         while (rightLimit < canvas.width) {
             ctx.drawImage(this.image, rightLimit + 1, 0, this.image.width, canvas.height);
@@ -334,7 +337,7 @@ function missile(x, y) {
         if (!this.image.isLoaded == true) return;
         this.x += MISSILE_SPEED;
         if (isTbd(this)) return;
-        var t = this;
+        const t = this;
 
         myscene.gameItems.forEach(function (item) {
             if (item instanceof enemy) {
@@ -410,7 +413,17 @@ function enemy(x, y, enemyNum) {
         this.y += this.speedY;
         if (isTbd(this)) return;
 
-        ctx.drawImage(this.image, 0 + (this.currentFrame - 1) * this.getFrameWidth(), 0, this.getFrameWidth(), this.getFrameHeight(), this.x, this.y, this.getFrameWidth(), this.getFrameHeight());
+        ctx.drawImage(
+            this.image,
+            0 + (this.currentFrame - 1) * this.getFrameWidth(),
+            0,
+            this.getFrameWidth(),
+            this.getFrameHeight(),
+            this.x,
+            this.y,
+            this.getFrameWidth(),
+            this.getFrameHeight()
+        );
 
         if (myscene.gameTicks % 5 == 0) this.nextImageFrame();
     };
@@ -509,15 +522,27 @@ function getRandom(min, max) {
 
 // 받은 수 만큼 이동
 function collisionArea(ob1, ob2) {
-    var overX = Math.max(0, Math.min(ob1.x + ob1.getFrameWidth(), ob2.x + ob2.getFrameWidth()) - Math.max(ob1.x, ob2.x));
-    var overY = Math.max(0, Math.min(ob1.y + ob1.getFrameHeight(), ob2.y + ob2.getFrameHeight()) - Math.max(ob1.y, ob2.y));
+    const overX = Math.max(
+        0,
+        Math.min(ob1.x + ob1.getFrameWidth(), ob2.x + ob2.getFrameWidth()) - Math.max(ob1.x, ob2.x)
+    );
+    const overY = Math.max(
+        0,
+        Math.min(ob1.y + ob1.getFrameHeight(), ob2.y + ob2.getFrameHeight()) -
+            Math.max(ob1.y, ob2.y)
+    );
 
     return overX * overY;
 }
 
 // 캔버스 범위 벗어난 요소들 tbd 변경
 function isTbd(ob) {
-    if (ob.x + ob.image.width < 0 || ob.x > canvas.width || ob.y + ob.image.height < 0 || ob.y > canvas.height) {
+    if (
+        ob.x + ob.image.width < 0 ||
+        ob.x > canvas.width ||
+        ob.y + ob.image.height < 0 ||
+        ob.y > canvas.height
+    ) {
         ob.tbd = true;
         return true;
     } else return false;
@@ -525,7 +550,7 @@ function isTbd(ob) {
 
 // tbd 요소 삭제
 function purgeTbd(arr) {
-    for (var i = arr.length - 1; i >= 0; i--) {
+    for (let i = arr.length - 1; i >= 0; i--) {
         if (arr[i].tbd) {
             arr.splice(i, 1);
         }
@@ -544,13 +569,18 @@ canvas.addEventListener('click', function (e) {
         const start = myscene.start;
 
         // 시작버튼 클릭시
-        if (start.x <= e.pageX && e.pageX <= start.max_width && start.y <= e.pageY && e.pageY <= start.max_height) {
+        if (
+            start.x <= e.pageX &&
+            e.pageX <= start.max_width &&
+            start.y <= e.pageY &&
+            e.pageY <= start.max_height
+        ) {
             myscene.started = true;
             myscene.ship.isDead = false;
             myscene.score = 0;
             sound.playBg();
 
-            for (var i = myscene.gameItems.length - 1; i >= 0; i--) {
+            for (let i = myscene.gameItems.length - 1; i >= 0; i--) {
                 if (myscene.gameItems[i] instanceof enemy) myscene.gameItems.splice(i, 1);
             }
 
