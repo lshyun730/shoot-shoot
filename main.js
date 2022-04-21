@@ -162,31 +162,23 @@ scene.prototype.initEnemies = function () {
     t.gameItems.push(new enemy(0, 0, 1));
 
     // black enemy
-    setInterval(function () {
-        t.gameItems.push(new enemy(0, 0, 1));
-    }, 2000);
+    setInterval(() => t.gameItems.push(new enemy(0, 0, 1)), 2000);
+
+    // greem enemy
+    setInterval(() => t.gameItems.push(new enemy(0, 0, 3)), 4000);
 
     // red enemy
-    setInterval(function () {
+    setInterval(() => {
         for (let i = 0; i < 3; i++) {
-            setTimeout(function () {
-                t.gameItems.push(new enemy(0, 0, 2));
-            }, 1000 * i);
+            setTimeout(() => t.gameItems.push(new enemy(0, 0, 2)), 1000 * i);
         }
     }, 8000);
 
-    // greem enemy
-    setInterval(function () {
-        t.gameItems.push(new enemy(0, 0, 3));
-    }, 4000);
-
     // white enemy
-    setInterval(function () {
+    setInterval(() => {
         const y = getRandom(100, canvas.height - 100);
         for (let i = 0; i < 5; i++) {
-            setTimeout(function () {
-                t.gameItems.push(new enemy(0, y, 4));
-            }, 200 * i);
+            setTimeout(() => t.gameItems.push(new enemy(0, y, 4)), 200 * i);
         }
     }, 5000);
 };
@@ -203,18 +195,13 @@ scene.prototype.drawAll = function () {
     purgeTbd(this.gameItems);
     this.gameItems.sort(compareZindex);
 
-    if (!this.paused) {
-        this.gameItems.forEach(function (item, index) {
-            item.draw();
-        });
-    }
+    if (!this.paused) this.gameItems.forEach((item) => item.draw());
 
     if (this.started) {
         this.setScore();
         this.setHeart();
     }
 
-    if (this.heart <= 0) this.ship.isDead = true;
     if (this.ship.isDead) this.gameOver();
     if (!this.started) this.clickToStart();
 
@@ -293,10 +280,9 @@ ship.prototype.draw = function () {
             if (collisionArea(item, t) > SHIP_ENEMY_COLLISION && !myscene.ship.shield) {
                 myscene.ship.shield = true;
                 myscene.heart -= 1;
+                if (myscene.heart === 0) myscene.ship.isDead = true;
                 t.explode(t.x, t.y);
-                setTimeout(function () {
-                    myscene.ship.shield = false;
-                }, 5000);
+                setTimeout(() => (myscene.ship.shield = false), 5000);
             }
         }
     });
@@ -323,7 +309,7 @@ function background(x, y) {
         let rightLimit = this.x + this.image.width;
 
         while (rightLimit < canvas.width) {
-            ctx.drawImage(this.image, rightLimit + 1, 0, this.image.width, canvas.height);
+            ctx.drawImage(this.image, rightLimit, 0, this.image.width, canvas.height);
             rightLimit += this.image.width;
         }
         if (this.x + this.image.width < 0) this.x = 0;
