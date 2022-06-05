@@ -114,6 +114,6 @@ const images = new imagesList();
 -   [x] fix framed out
 -   [ ] game over when out of page
 -   [ ] Create Restart Button
--   [ ] Save scores to view ranks
+-   [x] Save high score
 
 <br><br>

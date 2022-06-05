@@ -237,11 +237,20 @@ scene.prototype.clickToStart = function () {
 scene.prototype.gameOver = function () {
     sound.stopBg();
     // sound.playGameOver();
+
+    const highScore = localStorage.getItem('highScore') ? localStorage.getItem('highScore') : 0;
+    if (highScore < this.score) localStorage.setItem('highScore', this.score);
+
     ctx.save();
     ctx.font = '40pt Impact';
     ctx.textAlign = 'center';
     ctx.fillText('GAME OVER ', canvas.width / 2, canvas.height / 2 - 40);
     ctx.fillText('SCORE: ' + this.score, canvas.width / 2, canvas.height / 2 + 40);
+    ctx.fillText(
+        'HIGH SCORE: ' + localStorage.getItem('highScore'),
+        canvas.width / 2,
+        canvas.height / 2 + 120
+    );
     ctx.restore();
 };
 
