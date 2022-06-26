@@ -30,76 +30,69 @@ Programming Language - Javascript
 
 <br><br>
 
-### ✔ Reference Site
-
-#### Images Reference
-
--   [background image](https://kr.freepik.com/free-vector/adventure-background_16921968.htm)
--   [ship image](https://www.freepik.com/free-vector/astronaut-riding-rocket-cartoon-vector-icon-illustration-science-technology-icon-concept-isolated-premium-vector-flat-cartoon-style_17303379.htm#page=2&query=astronaut%20space%20rocket&position=23&from_view=search)
--   [bird image](https://www.freepik.com/free-vector/kawaii-birds-collection_4320275.htm#&position=3&from_view=undefined#position=1)
-
-<br>
-
-#### Design Reference
-
--   [duck hunt](https://www.silvergames.com/en/duck-hunt)
--   [shootup](https://shootup.io/) (logo design)
-
-<br>
-<br>
-
 ### ✔ Requirement
 
--   arrows to move up and down
--   every enemy has it’s own behavior
--   press the spacebar, space to shoot
--   bump into a bird three times, game over
--   When a bird is damaged to death, gets point
+- arrows to move up and down
+- every enemy has it’s own behavior
+- press the spacebar, space to shoot
+- bump into a bird three times, game over
+- When a bird is damaged to death, gets point
 
-    <br><br>
+  <br><br>
+
+### ✔ Areas for Improvement
+
+- [x] bullets and birds disappear from the canvas, delete them from the gameItemList (2022.04.10)
+- [x] fix framed out (2022.04.10)
+- [x] Create Restart Button (2022.06.26)
+- [x] Save high score (2022.06.05)
+- [x] Mute sound effect (2022.06.25)
+- [ ] game over when out of page
+
+<br><br>
 
 ### ✔ Specificity
 
--   inheritance using Prototype Instead of Class
--   coded as Vanilla JavaScript
--   image repository constructor function was created to create an image instance
+- inheritance using Prototype Instead of Class
+- coded as Vanilla JavaScript
+- image repository constructor function was created to create an image instance
 
 ```javascript
 // image repository
 function imagesList() {
-    this.logo = new Image();
-    this.logo.src = 'images/logo.png';
-    this.heart.onload = function () {
-        this.isLoaded = true;
-    };
+  this.logo = new Image();
+  this.logo.src = 'images/logo.png';
+  this.heart.onload = function () {
+    this.isLoaded = true;
+  };
 
-    this.getImageFor = function (item, enemyNum) {
-        if (item instanceof logo) return this.logo;
-    };
+  this.getImageFor = function (item, enemyNum) {
+    if (item instanceof logo) return this.logo;
+  };
 }
 
 // create game object
 function gameObject(x, y, enemyNum) {
-    this.x = x;
-    this.y = y;
-    this.image = images.getImageFor(this, enemyNum);
+  this.x = x;
+  this.y = y;
+  this.image = images.getImageFor(this, enemyNum);
 }
 
 // create logo image object
 function logo(x, y) {
-    gameObject.call(this, x, y);
-    this.x = canvas.width / 2 - this.image.width / 2;
-    this.y = canvas.height / 2 - 250;
-    this.zindex = 1000;
-    this.draw = function () {
-        if (!this.image.isLoaded == true) return;
-        ctx.drawImage(this.image, this.x, this.y, this.image.width, this.image.height);
-    };
+  gameObject.call(this, x, y);
+  this.x = canvas.width / 2 - this.image.width / 2;
+  this.y = canvas.height / 2 - 250;
+  this.zindex = 1000;
+  this.draw = function () {
+    if (!this.image.isLoaded == true) return;
+    ctx.drawImage(this.image, this.x, this.y, this.image.width, this.image.height);
+  };
 }
 
 // click the start game button
 scene.prototype.clickToStart = function () {
-    new logo(0, 0).draw();
+  new logo(0, 0).draw();
 };
 
 // create image list construction function
@@ -108,12 +101,20 @@ const images = new imagesList();
 
 <br><br>
 
-### ✔ Areas for Improvement
+### ✔ Reference Site
 
--   [x] bullets and birds disappear from the canvas, delete them from the gameItemList
--   [x] fix framed out
--   [ ] game over when out of page
--   [ ] Create Restart Button
--   [x] Save high score
+#### Images Reference
 
-<br><br>
+- [background image](https://kr.freepik.com/free-vector/adventure-background_16921968.htm)
+- [ship image](https://www.freepik.com/free-vector/astronaut-riding-rocket-cartoon-vector-icon-illustration-science-technology-icon-concept-isolated-premium-vector-flat-cartoon-style_17303379.htm#page=2&query=astronaut%20space%20rocket&position=23&from_view=search)
+- [bird image](https://www.freepik.com/free-vector/kawaii-birds-collection_4320275.htm#&position=3&from_view=undefined#position=1)
+
+<br>
+
+#### Design Reference
+
+- [duck hunt](https://www.silvergames.com/en/duck-hunt)
+- [shootup](https://shootup.io/) (logo design)
+
+<br>
+<br>
