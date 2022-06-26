@@ -109,14 +109,13 @@ function imagesList() {
   this.start.verticalImageFrames = 1;
   this.start.horizontalImageFrames = 1;
 
-  this.lank = new Image();
-  this.lank.src = 'images/lank.png';
-  this.lank.id = 'btnLank';
-  this.lank.onload = function () {
+  this.gameOverBtn = new Image();
+  this.gameOverBtn.src = 'images/game_over.png';
+  this.gameOverBtn.onload = function () {
     this.isLoaded = true;
   };
-  this.lank.verticalImageFrames = 1;
-  this.lank.horizontalImageFrames = 1;
+  this.gameOverBtn.verticalImageFrames = 1;
+  this.gameOverBtn.horizontalImageFrames = 1;
 
   this.getImageFor = function (item, enemyNum) {
     if (item instanceof ship) return this.ship;
@@ -127,7 +126,7 @@ function imagesList() {
     if (item instanceof heart) return this.heart;
     if (item instanceof soundBtn) return this.soundBtn;
     if (item instanceof start) return this.start;
-    if (item instanceof lank) return this.lank;
+    if (item instanceof gameOverBtn) return this.gameOverBtn;
     if (item instanceof enemy && enemyNum == 1) return this.enemyblack;
     if (item instanceof enemy && enemyNum == 2) return this.enemyred;
     if (item instanceof enemy && enemyNum == 3) return this.enemygreen;
@@ -239,34 +238,39 @@ scene.prototype.setSoundBtn = function () {
 };
 
 scene.prototype.gameStart = function () {
+  this.started = true;
+  this.ship.isDead = false;
+  this.score = 0;
+  this.heart = HEART;
+  sound.playBg();
+
+  for (let i = this.gameItems.length - 1; i >= 0; i--) {
+    if (this.gameItems[i] instanceof enemy) this.gameItems.splice(i, 1);
+  }
   this.gameItems.push(this.ship);
   this.initEnemies();
 };
 scene.prototype.clickToStart = function () {
   new logo(0, 0).draw();
-  new start(0, 0).draw();
-  new lank(0, 0).draw();
   this.start = new start(0, 0);
   this.start.draw();
 };
 scene.prototype.gameOver = function () {
-  sound.stopBg();
-  // sound.playGameOver();
-
   const highScore = localStorage.getItem('highScore') ? localStorage.getItem('highScore') : 0;
   if (highScore < this.score) localStorage.setItem('highScore', this.score);
 
+  this.gameOverBtn = new gameOverBtn(0, 0);
+  this.gameOverBtn.draw();
+
   ctx.save();
-  ctx.font = '40pt Impact';
+  ctx.font = '42pt Impact';
   ctx.textAlign = 'center';
-  ctx.fillText('GAME OVER ', canvas.width / 2, canvas.height / 2 - 40);
-  ctx.fillText('SCORE: ' + this.score, canvas.width / 2, canvas.height / 2 + 40);
-  ctx.fillText(
-    'HIGH SCORE: ' + localStorage.getItem('highScore'),
-    canvas.width / 2,
-    canvas.height / 2 + 120
-  );
+  ctx.fillText(this.score, canvas.width / 2, canvas.height / 2 - 30);
+  ctx.font = '30pt Impact';
+  ctx.fillText(localStorage.getItem('highScore'), canvas.width / 2, canvas.height / 2 + 80);
   ctx.restore();
+
+  sound.stopBg();
 };
 
 function ship(x, y) {
@@ -471,7 +475,7 @@ explosion.prototype = Object.create(gameObject.prototype);
 function logo(x, y) {
   gameObject.call(this, x, y);
   this.x = canvas.width / 2 - this.image.width / 2;
-  this.y = canvas.height / 2 - 250;
+  this.y = canvas.height / 2 - 200;
   this.zindex = 1000;
   this.draw = function () {
     if (!this.image.isLoaded == true) return;
@@ -516,22 +520,22 @@ function start(x, y) {
   gameObject.call(this, x, y);
   this.zindex = 1000;
   this.x = canvas.width / 2 - this.image.width / 2;
-  this.y = canvas.height / 2 + 50;
+  this.y = canvas.height / 2 + 80;
   this.max_width = this.x + this.image.width;
   this.max_height = this.y + this.image.height;
-
   this.draw = function () {
     if (!this.image.isLoaded == true) return;
     ctx.drawImage(this.image, this.x, this.y, this.image.width, this.image.height);
   };
 }
 
-function lank(x, y) {
+function gameOverBtn(x, y) {
   gameObject.call(this, x, y);
-  this.zindex = 10000;
-  this.x = canvas.width / 2 - this.image.width / 2;
-  this.y = canvas.height / 2 + 140;
   this.zindex = 1000;
+  this.x = canvas.width / 2 - this.image.width / 2;
+  this.y = canvas.height / 2 - this.image.height / 2;
+  this.max_width = this.x + this.image.width;
+  this.max_height = this.y + this.image.height;
   this.draw = function () {
     if (!this.image.isLoaded == true) return;
     ctx.drawImage(this.image, this.x, this.y, this.image.width, this.image.height);
@@ -605,19 +609,25 @@ canvas.addEventListener('click', function (e) {
       start.y <= e.pageY &&
       e.pageY <= start.max_height
     ) {
-      myscene.started = true;
-      myscene.ship.isDead = false;
-      myscene.score = 0;
-      sound.playBg();
+      myscene.gameStart();
+    }
+  } else if (myscene.ship.isDead) {
+    const gameOverBtn = myscene.gameOverBtn;
+    console.log(e.pageY <= gameOverBtn.max_height);
 
-      for (let i = myscene.gameItems.length - 1; i >= 0; i--) {
-        if (myscene.gameItems[i] instanceof enemy) myscene.gameItems.splice(i, 1);
-      }
-
+    // 리플레이버튼 클릭시
+    if (
+      gameOverBtn.x <= e.pageX &&
+      e.pageX <= gameOverBtn.max_width &&
+      gameOverBtn.max_height - 70 <= e.pageY &&
+      e.pageY <= gameOverBtn.max_height
+    ) {
       myscene.gameStart();
     }
   } else {
     const soundBtn = myscene.soundBtn;
+
+    // 사운드버튼 클릭시
     if (
       soundBtn.x <= e.pageX &&
       e.pageX <= soundBtn.max_width &&
