@@ -169,26 +169,31 @@ scene.prototype.initEnemies = function () {
   const t = this;
   t.gameItems.push(new enemy(0, 0, 1));
 
+  this.enemyIntervalList = [];
   // black enemy
-  setInterval(() => t.gameItems.push(new enemy(0, 0, 1)), 2000);
+  this.enemyIntervalList.push(setInterval(() => t.gameItems.push(new enemy(0, 0, 1)), 2000));
 
-  // greem enemy
-  setInterval(() => t.gameItems.push(new enemy(0, 0, 3)), 4000);
+  // green enemy
+  this.enemyIntervalList.push(setInterval(() => t.gameItems.push(new enemy(0, 0, 3)), 4000));
 
   // red enemy
-  setInterval(() => {
-    for (let i = 0; i < 3; i++) {
-      setTimeout(() => t.gameItems.push(new enemy(0, 0, 2)), 1000 * i);
-    }
-  }, 8000);
+  this.enemyIntervalList.push(
+    setInterval(() => {
+      for (let i = 0; i < 3; i++) {
+        setTimeout(() => t.gameItems.push(new enemy(0, 0, 2)), 1000 * i);
+      }
+    }, 8000)
+  );
 
   // white enemy
-  setInterval(() => {
-    const y = getRandom(100, canvas.height - 100);
-    for (let i = 0; i < 5; i++) {
-      setTimeout(() => t.gameItems.push(new enemy(0, y, 4)), 200 * i);
-    }
-  }, 5000);
+  this.enemyIntervalList.push(
+    setInterval(() => {
+      const y = getRandom(100, canvas.height - 100);
+      for (let i = 0; i < 5; i++) {
+        setTimeout(() => t.gameItems.push(new enemy(0, y, 4)), 200 * i);
+      }
+    }, 5000)
+  );
 };
 scene.prototype.init = function () {
   this.gameItems.push(new background(0, 0));
@@ -256,6 +261,10 @@ scene.prototype.clickToStart = function () {
   this.start.draw();
 };
 scene.prototype.gameOver = function () {
+  this.enemyIntervalList.map((enemyInterval) => {
+    clearInterval(enemyInterval);
+  });
+
   const highScore = localStorage.getItem('highScore') ? localStorage.getItem('highScore') : 0;
   if (highScore < this.score) localStorage.setItem('highScore', this.score);
 
@@ -356,9 +365,9 @@ function missile(x, y) {
     myscene.gameItems.forEach(function (item) {
       if (item instanceof enemy) {
         if (collisionArea(item, t) > ENEMY_MISSILE_COLLISION) {
-          t.tbd = true;
+          item.explode();
           item.heart -= 1;
-          item.explode(item.score);
+          t.tbd = true;
           sound.playExplode();
         }
       }
@@ -372,7 +381,6 @@ function enemyPattern(enemy) {
   switch (enemy.enemyNum) {
     case 1:
       enemy.speedX = 4;
-      enemy.score = 10;
       break;
     case 2:
       enemy.score = 50;
@@ -405,6 +413,7 @@ function enemy(x, y, enemyNum) {
   this.y = y;
   this.speedY = 0;
   this.zindex = 1000;
+  this.score = 10;
   this.enemyTicks = 0;
   this.enemyNum = enemyNum;
 
@@ -437,8 +446,8 @@ function enemy(x, y, enemyNum) {
     if (myscene.gameTicks % 5 == 0) this.nextImageFrame();
   };
 
-  this.explode = function (score) {
-    myscene.score += score;
+  this.explode = function () {
+    myscene.score += this.score;
     this.tbd = true;
     myscene.gameItems.push(new explosion(this.x, this.y));
   };
@@ -608,7 +617,6 @@ canvas.addEventListener('click', function (e) {
     }
   } else if (myscene.ship.isDead) {
     const gameOverBtn = myscene.gameOverBtn;
-    console.log(e.pageY <= gameOverBtn.max_height);
 
     // 리플레이버튼 클릭시
     if (
