@@ -3,9 +3,9 @@
 import * as sound from './sound.js';
 
 const BACKGROUND_SPEED = -4;
-const SHIP_SPEED = 8;
+const SHIP_SPEED = 6;
 const HEART = 3;
-const MISSILE_SPEED = 60;
+const MISSILE_SPEED = 30;
 const SHIP_ENEMY_COLLISION = 50;
 const ENEMY_MISSILE_COLLISION = 20;
 
@@ -358,12 +358,8 @@ function missile(x, y) {
         if (collisionArea(item, t) > ENEMY_MISSILE_COLLISION) {
           t.tbd = true;
           item.heart -= 1;
-          if (item.heart == 0) {
-            item.explode(item.score);
-            sound.playExplode();
-          } else {
-            sound.playAttack();
-          }
+          item.explode(item.score);
+          sound.playExplode();
         }
       }
     });
@@ -409,7 +405,6 @@ function enemy(x, y, enemyNum) {
   this.y = y;
   this.speedY = 0;
   this.zindex = 1000;
-  this.heart = 2;
   this.enemyTicks = 0;
   this.enemyNum = enemyNum;
 
