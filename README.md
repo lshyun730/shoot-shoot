@@ -17,6 +17,7 @@ Neat and challenging shooter game. Arrows to move up and down, space to shoot.
 <a href = "https://lshyun730.github.io/shoot-shoot/"><img alt="GitHub" src ="https://img.shields.io/badge/GitHub-181717.svg?&style=for-the-badge&logo=GitHub&logoColor=white"/>
 </a>
 
+
 ⭐ Description
 
 <a href = "https://drive.google.com/file/d/1eOE-lj2VxBPfoBy2XPr5744gL_LK-NKS/view"><img alt="GitHub" src ="https://img.shields.io/badge/Japanese-B7472A.svg?&style=for-the-badge&logo=Microsoft PowerPoint&logoColor=white"/>
@@ -37,6 +38,12 @@ Programming Language - Javascript
 - press the spacebar, space to shoot
 - bump into a bird three times, game over
 - When a bird is damaged to death, gets point
+
+  <br><br>
+
+### ✔ How To Play
+
+![How to play](https://user-images.githubusercontent.com/48264855/176650786-eb59af14-8811-4f80-9232-212145ca03d9.png)
 
   <br><br>
 
